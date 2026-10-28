@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recuperar o homelab</title>
+<style>
+:root{--bg:#fbfaf7;--fg:#1d1d1b;--mut:#6b6a66;--bd:#dedbd3;--card:#fff;--ac:#0b6e4f;--warn:#a4161a;--code:#f1efe9}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151514;--fg:#ecebe6;--mut:#a3a19a;--bd:#33322f;--card:#1d1d1b;--ac:#5fd3a5;--warn:#ff7b7b;--code:#262523}}
+:root[data-theme="dark"]{--bg:#151514;--fg:#ecebe6;--mut:#a3a19a;--bd:#33322f;--card:#1d1d1b;--ac:#5fd3a5;--warn:#ff7b7b;--code:#262523}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:820px;margin:0 auto;padding:24px 16px 64px}
+h1{font-size:1.7rem;margin:0 0 4px} h2{font-size:1.2rem;margin:36px 0 8px;padding-top:12px;border-top:1px solid var(--bd)}
+h3{font-size:1rem;margin:20px 0 6px}
+.mut{color:var(--mut);font-size:.92rem}
+.status{background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--ac);padding:12px 14px;border-radius:6px;margin:16px 0}
+.alerta{border-left-color:var(--warn)}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.88em;overflow-wrap:anywhere}
+pre{background:var(--code);padding:12px;border-radius:6px;overflow-x:auto;font-size:.86rem;line-height:1.45}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;font-size:.9rem;display:block;overflow-x:auto}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--bd);vertical-align:top}
+td.ok{color:var(--ac);font-weight:600} td.falta{color:var(--warn);font-weight:700}
+li{margin:3px 0} ol>li{margin:8px 0}
+@media print{body{background:#fff;color:#000} .status{border-color:#000} pre,code{background:#eee}}
+</style></head><body><main>
+
+<h1>Recuperar o homelab</h1>
+<p class="mut">Servidor <b>joao-server</b> (notebook Lenovo ideapad 330S, Ubuntu 24.04, IP da casa 192.168.15.200).
+Esta página é gerada pelo próprio servidor todo dia e publicada aqui: <a href="https://joaosgotti.github.io/homelab-recuperacao/">https://joaosgotti.github.io/homelab-recuperacao/</a></p>
+
+<div class="status">
+<b>Página atualizada em:</b> 28/10/2026 10:08<br>
+<b>Último backup offsite confirmado:</b> 28/10/2026 05:04
+</div>
+<div class="status alerta">Se a data de atualização acima tem <b>mais de 2 dias</b>, o servidor parou de funcionar
+ou perdeu a internet. Nesse caso tudo que está aqui ainda vale: é a foto do último dia em que ele estava vivo.</div>
+
+<h2>0. O que você precisa ter fora do servidor</h2>
+<p>No gerenciador de senhas, entrada <b>"Homelab – recuperação"</b>. Sem as três primeiras o backup não abre,
+nem a Backblaze consegue abrir. <b>Nenhum valor aparece nesta página.</b></p>
+<table><tr><th>Item</th><th>Onde estava no servidor (para recopiar)</th></tr>
+<tr><td><b>Senha do restic</b>: se perder, o backup está perdido</td><td><code>sudo cat /root/.restic-pass</code></td></tr>
+<tr><td><b>Endereço do repositório restic</b> (começa com <code>b2:</code>)</td><td><code>sudo grep RESTIC_REPOSITORY /usr/local/sbin/backup-offsite.sh</code></td></tr>
+<tr><td><b>Key ID e application key do B2</b></td><td><code>sudo cat /root/.b2-restic.env</code></td></tr>
+<tr><td>Login da conta Backblaze (para gerar uma key nova)</td><td>—</td></tr>
+<tr><td>Login do Tailscale, do GitHub (<code>joaosgotti</code>) e do Google (planilha da carteira)</td><td>—</td></tr>
+</table>
+
+<h2>1. Primeiro, qual é o caso?</h2>
+<ol>
+<li><b>O servidor liga, mas algo quebrou</b> (configuração ruim, atualização): no próprio servidor leia
+<code>~/RESTAURAR.md</code> (Timeshift, volta o sistema sem tocar em mídia) ou restaure só a pasta que quebrou com o restic (passo 2).</li>
+<li><b>O disco interno (NVMe) morreu, ou o notebook se foi</b>: siga os passos 2 a 5 numa máquina nova com Ubuntu 24.04.</li>
+<li><b>Só o HD externo morreu</b>: nada se perde; a mídia original está no HD interno (<code>/mnt/midia</code>). Compre outro, formate ext4 com rótulo <code>espelho</code> e o rsync das 04:00 refaz a cópia.</li>
+</ol>
+
+<h2>2. Restaurar os dados do backup offsite (restic + Backblaze B2)</h2>
+<pre><code>sudo apt update &amp;&amp; sudo apt install -y restic
+export RESTIC_REPOSITORY='&lt;endereço do repositório&gt;'
+export B2_ACCOUNT_ID='&lt;key ID do B2&gt;'
+export B2_ACCOUNT_KEY='&lt;application key do B2&gt;'
+restic snapshots          # pede a senha do restic; o último da lista é o mais recente
+restic check              # tem que terminar com "no errors were found"
+sudo mkdir -p /restaurado
+sudo -E restic restore latest --target /restaurado</code></pre>
+<p>Tudo volta em <code>/restaurado</code> com os caminhos originais. Para uma pasta só, acrescente
+<code>--include /caminho</code>. O passo a passo detalhado também está no backup, em
+<code>/restaurado/home/joao-server/RECUPERAR-BACKUP.md</code>, e os relatórios de como cada coisa foi montada
+estão em <code>/restaurado/home/joao-server/logs-homelab/</code>.</p>
+
+<h3>O que está no backup (gerado da lista real)</h3>
+<ul><li><code>/etc</code></li><li><code>/root</code></li><li><code>/var/lib/radarr</code></li><li><code>/var/lib/sonarr</code></li><li><code>/var/lib/prowlarr</code></li><li><code>/opt/bazarr/data</code></li><li><code>/opt/uptime-kuma/data</code></li><li><code>/opt/concierge</code></li><li><code>/home/joao-server/agente-de-saude</code></li><li><code>/home/joao-server/homer</code></li><li><code>/home/joao-server/logs-homelab</code></li><li><code>/home/joao-server/RESTAURAR.md</code></li><li><code>/home/joao-server/.config/rclone</code></li><li><code>/home/joao-server/.netrc</code></li><li><code>/usr/local/bin</code></li><li><code>/usr/local/sbin</code></li><li><code>/var/spool/cron</code></li><li><code>/home/joao-server/backups/rag-cin</code></li><li><code>/home/joao-server/rag-ia-aplicada</code></li><li><code>/home/joao-server/rag-idv</code></li><li><code>/home/joao-server/rag-idv-funnel</code></li><li><code>/home/joao-server/.config/systemd/user</code></li><li><code>/home/joao-server/RECUPERAR-BACKUP.md</code></li></ul>
+
+<h2>3. Reinstalar os serviços</h2>
+<p>Instale o Ubuntu 24.04, dê o IP fixo 192.168.15.200 (Wi-Fi, gateway 192.168.15.1) e o nome <code>joao-server</code>.
+Então, para cada serviço: instale o programa, pare-o, copie a configuração de <code>/restaurado</code> para o mesmo
+caminho e ligue de novo. As units do systemd estão em <code>/restaurado/etc/systemd/system/</code> e os scripts em
+<code>/restaurado/usr/local/{bin,sbin}</code>.</p>
+<h3>Serviços nativos</h3>
+<ul><li>Pi-hole: <code>curl -sSL https://install.pi-hole.net | bash</code>, depois copie <code>/etc/pihole</code> restaurado</li><li>Jellyfin: repositório apt oficial (<code>/etc/apt/sources.list.d/jellyfin.list</code> está no backup), <code>apt install jellyfin</code></li><li>Radarr: binário em <code>/opt/Radarr</code> (baixe de radarr.video), dados em <code>/var/lib/radarr</code></li><li>Sonarr: binário em <code>/opt/Sonarr</code> (sonarr.tv), dados em <code>/var/lib/sonarr</code></li><li>Prowlarr: binário em <code>/opt/Prowlarr</code> (prowlarr.com), dados em <code>/var/lib/prowlarr</code></li><li>Bazarr: <code>git clone</code> em <code>/opt/bazarr</code> + venv; dados em <code>/opt/bazarr/data</code></li><li>Transmission: <code>apt install transmission-daemon</code>; config em <code>/etc/transmission-daemon</code></li><li>Uptime Kuma: <code>git clone</code> em <code>/opt/uptime-kuma</code> + <code>npm run setup</code>; dados em <code>/opt/uptime-kuma/data</code></li><li>Tailscale: repositório apt oficial, <code>tailscale up</code> com a sua conta</li><li>Concierge: código e venv em <code>/opt/concierge</code> (no backup; recrie o venv)</li><li>Ollama: <code>curl -fsSL https://ollama.com/install.sh | sh</code>; modelos se baixam de novo</li><li>Docker: <code>apt install docker.io docker-compose-v2</code></li><li>Samba: <code>apt install samba</code>; config em <code>/etc/samba</code></li></ul>
+<h3>Outras units ligadas no servidor (scripts do homelab)</h3>
+<ul><li><code>backup-offsite.timer</code></li><li><code>checagens-homelab.service</code></li><li><code>pagina-recuperacao.timer</code></li><li><code>pendencias-homelab.timer</code></li><li><code>registro-rede.service</code></li><li><code>relatorio-manha.timer</code></li><li><code>saude-lembrete-jan2027.timer</code></li><li><code>saude-limpeza-pos-v3.timer</code></li><li><code>syncthing-resume.service</code></li><li><code>watchdog-rede.timer</code></li></ul>
+<p class="mut">Crontab do root (espelho das 04:00): <code>/restaurado/var/spool/cron/crontabs/root</code>.</p>
+
+<h3>Contêineres Docker</h3>
+<table><tr><th>Contêiner</th><th>Imagem</th><th>Pasta do compose</th><th>No backup?</th></tr><tr><td><code>agente-de-saude-api-1</code></td><td><code>agente-de-saude-api</code></td><td><code>/home/joao-server/agente-de-saude/infra</code></td><td class='ok'>sim</td></tr><tr><td><code>agente-de-saude-backup-1</code></td><td><code>agente-de-saude-backup</code></td><td><code>/home/joao-server/agente-de-saude/infra</code></td><td class='ok'>sim</td></tr><tr><td><code>agente-de-saude-caddy-1</code></td><td><code>caddy:2-alpine</code></td><td><code>/home/joao-server/agente-de-saude/infra</code></td><td class='ok'>sim</td></tr><tr><td><code>agente-de-saude-db-1</code></td><td><code>postgres:17-alpine</code></td><td><code>/home/joao-server/agente-de-saude/infra</code></td><td class='ok'>sim</td></tr><tr><td><code>flaresolverr</code></td><td><code>ghcr.io/flaresolverr/flaresolverr:latest</code></td><td><code>/home/joao-server/lettarrboxd</code></td><td class='falta'>NÃO</td></tr><tr><td><code>homer</code></td><td><code>b4bz/homer:latest</code></td><td><code>/home/joao-server/homer</code></td><td class='ok'>sim</td></tr><tr><td><code>lettarrboxd</code></td><td><code>lettarrboxd-fork:latest</code></td><td><code>/home/joao-server/lettarrboxd</code></td><td class='falta'>NÃO</td></tr><tr><td><code>rag-idv-funnel</code></td><td><code>tailscale/tailscale:v1.102.5</code></td><td><code>/home/joao-server/rag-idv-funnel</code></td><td class='ok'>sim</td></tr></table>
+<p>Para cada um com "sim": <code>cd &lt;pasta&gt; &amp;&amp; docker compose up -d</code>.</p>
+
+<h2>4. As RAGs (MCPs dos cursos)</h2>
+<ol>
+<li>Copie de <code>/restaurado/home/joao-server/</code> para <code>/home/joao-server/</code>: <code>backups/rag-cin</code>,
+<code>rag-ia-aplicada</code>, <code>rag-idv</code>, <code>rag-idv-funnel</code> e <code>.config/systemd/user</code>.</li>
+<li>Recrie o ambiente Python:
+<pre><code>python3 -m venv ~/rag-cin-mcp/.venv
+~/rag-cin-mcp/.venv/bin/pip install -r ~/backups/rag-cin/rag-cin/requirements.lock.txt</code></pre></li>
+<li>Entre no Tailscale. As units ouvem no IP Tailscale do servidor; se ele mudar, troque nas units <code>rag-*-mcp.service</code>.</li>
+<li><pre><code>sudo loginctl enable-linger joao-server
+systemctl --user daemon-reload
+systemctl --user enable --now carteira-google.timer rag-cin-mcp.service rag-ia-aplicada-indexar.timer rag-ia-aplicada-mcp.service rag-idv-mcp.service</code></pre></li>
+</ol>
+<p class="mut">Units de usuário ligadas hoje:</p><ul><li><code>carteira-google.timer</code></li><li><code>rag-cin-mcp.service</code></li><li><code>rag-ia-aplicada-indexar.timer</code></li><li><code>rag-ia-aplicada-mcp.service</code></li><li><code>rag-idv-mcp.service</code></li></ul>
+
+<h2>5. O que NÃO está no backup</h2>
+<ul>
+<li><b>Mídia</b> (<code>/mnt/midia</code>: filmes, séries, músicas e os vídeos dos cursos). Só existe no HD interno e no espelho, que fica no mesmo notebook.</li>
+<li>Áudio e vídeo das RAGs, e o ambiente Python (recriável).</li>
+<li>O banco do Jellyfin (<code>/var/lib/jellyfin</code>: usuários e histórico). Refaça as bibliotecas apontando para <code>/mnt/midia/filmes</code>, <code>series</code>, <code>musicas</code>.</li>
+<li>A partição cifrada de 372 GB do HD externo.</li>
+<li>compose do contêiner <code>flaresolverr</code> (<code>/home/joao-server/lettarrboxd</code>)</li><li>compose do contêiner <code>lettarrboxd</code> (<code>/home/joao-server/lettarrboxd</code>)</li>
+</ul>
+<p>O <b>agente-de-saúde</b> tem backup próprio: banco no GitHub (03:00) e artefatos no B2 (03:30). O código está em
+<code>github.com/joaosgotti/agente-de-saude</code>.</p>
+
+<p class="mut" style="margin-top:40px">Gerado por <code>/usr/local/sbin/pagina-recuperacao.py</code> (timer
+<code>pagina-recuperacao.timer</code>, diário às 06:30). Não edite aqui no GitHub: a próxima execução sobrescreve.</p>
+</main></body></html>
