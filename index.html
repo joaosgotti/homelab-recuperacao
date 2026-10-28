@@ -104,7 +104,7 @@ systemctl --user enable --now carteira-google.timer rag-cin-mcp.service rag-ia-a
 <ul>
 <li><b>Mídia</b> (<code>/mnt/midia</code>: filmes, séries, músicas e os vídeos dos cursos). Só existe no HD interno e no espelho, que fica no mesmo notebook.</li>
 <li>Áudio e vídeo das RAGs, e o ambiente Python (recriável).</li>
-<li>O banco do Jellyfin (<code>/var/lib/jellyfin</code>: usuários e histórico). Refaça as bibliotecas apontando para <code>/mnt/midia/filmes</code>, <code>series</code>, <code>musicas</code>.</li>
+<li>As capas e imagens do Jellyfin (<code>/var/lib/jellyfin/metadata</code>): ele baixa de novo sozinho. O banco, os usuários, o histórico e as bibliotecas estão no backup: instale o Jellyfin, pare-o, copie <code>/restaurado/var/lib/jellyfin</code> e <code>/restaurado/etc/jellyfin</code> e ligue.</li>
 <li>A partição cifrada de 372 GB do HD externo.</li>
 
 </ul>
