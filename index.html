@@ -29,8 +29,8 @@ li{margin:3px 0} ol>li{margin:8px 0}
 Esta página é gerada pelo próprio servidor todo dia e publicada aqui: <a href="https://joaosgotti.github.io/homelab-recuperacao/">https://joaosgotti.github.io/homelab-recuperacao/</a></p>
 
 <div class="status">
-<b>Página atualizada em:</b> 28/10/2026 10:20<br>
-<b>Último backup offsite confirmado:</b> 28/10/2026 05:04
+<b>Página atualizada em:</b> 28/10/2026 10:27<br>
+<b>Último backup offsite confirmado:</b> 28/10/2026 10:27
 </div>
 <div class="status alerta">Se a data de atualização acima tem <b>mais de 2 dias</b>, o servidor parou de funcionar
 ou perdeu a internet. Nesse caso tudo que está aqui ainda vale: é a foto do último dia em que ele estava vivo.</div>
@@ -69,7 +69,7 @@ sudo -E restic restore latest --target /restaurado</code></pre>
 estão em <code>/restaurado/home/joao-server/logs-homelab/</code>.</p>
 
 <h3>O que está no backup (gerado da lista real)</h3>
-<ul><li><code>/etc</code></li><li><code>/root</code></li><li><code>/var/lib/radarr</code></li><li><code>/var/lib/sonarr</code></li><li><code>/var/lib/prowlarr</code></li><li><code>/opt/bazarr/data</code></li><li><code>/opt/uptime-kuma/data</code></li><li><code>/opt/concierge</code></li><li><code>/home/joao-server/agente-de-saude</code></li><li><code>/home/joao-server/homer</code></li><li><code>/home/joao-server/logs-homelab</code></li><li><code>/home/joao-server/RESTAURAR.md</code></li><li><code>/home/joao-server/.config/rclone</code></li><li><code>/home/joao-server/.netrc</code></li><li><code>/usr/local/bin</code></li><li><code>/usr/local/sbin</code></li><li><code>/var/spool/cron</code></li><li><code>/home/joao-server/backups/rag-cin</code></li><li><code>/home/joao-server/rag-ia-aplicada</code></li><li><code>/home/joao-server/rag-idv</code></li><li><code>/home/joao-server/rag-idv-funnel</code></li><li><code>/home/joao-server/.config/systemd/user</code></li><li><code>/home/joao-server/RECUPERAR-BACKUP.md</code></li></ul>
+<ul><li><code>/etc</code></li><li><code>/root</code></li><li><code>/var/lib/radarr</code></li><li><code>/var/lib/sonarr</code></li><li><code>/var/lib/prowlarr</code></li><li><code>/opt/bazarr/data</code></li><li><code>/opt/uptime-kuma/data</code></li><li><code>/opt/concierge</code></li><li><code>/home/joao-server/agente-de-saude</code></li><li><code>/home/joao-server/homer</code></li><li><code>/home/joao-server/logs-homelab</code></li><li><code>/home/joao-server/RESTAURAR.md</code></li><li><code>/home/joao-server/.config/rclone</code></li><li><code>/home/joao-server/.netrc</code></li><li><code>/usr/local/bin</code></li><li><code>/usr/local/sbin</code></li><li><code>/var/spool/cron</code></li><li><code>/home/joao-server/backups/rag-cin</code></li><li><code>/home/joao-server/rag-ia-aplicada</code></li><li><code>/home/joao-server/rag-idv</code></li><li><code>/home/joao-server/rag-idv-funnel</code></li><li><code>/home/joao-server/.config/systemd/user</code></li><li><code>/home/joao-server/RECUPERAR-BACKUP.md</code></li><li><code>/home/joao-server/lettarrboxd</code></li><li><code>/home/joao-server/lettarrboxd-fork</code></li><li><code>/var/lib/jellyfin</code></li></ul>
 
 <h2>3. Reinstalar os serviços</h2>
 <p>Instale o Ubuntu 24.04, dê o IP fixo 192.168.15.200 (Wi-Fi, gateway 192.168.15.1) e o nome <code>joao-server</code>.
@@ -83,7 +83,7 @@ caminho e ligue de novo. As units do systemd estão em <code>/restaurado/etc/sys
 <p class="mut">Crontab do root (espelho das 04:00): <code>/restaurado/var/spool/cron/crontabs/root</code>.</p>
 
 <h3>Contêineres Docker</h3>
-<table><tr><th>Contêiner</th><th>Imagem</th><th>Pasta do compose</th><th>No backup?</th></tr><tr><td><code>agente-de-saude-api-1</code></td><td><code>agente-de-saude-api</code></td><td><code>/home/joao-server/agente-de-saude/infra</code></td><td class='ok'>sim</td></tr><tr><td><code>agente-de-saude-backup-1</code></td><td><code>agente-de-saude-backup</code></td><td><code>/home/joao-server/agente-de-saude/infra</code></td><td class='ok'>sim</td></tr><tr><td><code>agente-de-saude-caddy-1</code></td><td><code>caddy:2-alpine</code></td><td><code>/home/joao-server/agente-de-saude/infra</code></td><td class='ok'>sim</td></tr><tr><td><code>agente-de-saude-db-1</code></td><td><code>postgres:17-alpine</code></td><td><code>/home/joao-server/agente-de-saude/infra</code></td><td class='ok'>sim</td></tr><tr><td><code>flaresolverr</code></td><td><code>ghcr.io/flaresolverr/flaresolverr:latest</code></td><td><code>/home/joao-server/lettarrboxd</code></td><td class='falta'>NÃO</td></tr><tr><td><code>homer</code></td><td><code>b4bz/homer:latest</code></td><td><code>/home/joao-server/homer</code></td><td class='ok'>sim</td></tr><tr><td><code>lettarrboxd</code></td><td><code>lettarrboxd-fork:latest</code></td><td><code>/home/joao-server/lettarrboxd</code></td><td class='falta'>NÃO</td></tr><tr><td><code>rag-idv-funnel</code></td><td><code>tailscale/tailscale:v1.102.5</code></td><td><code>/home/joao-server/rag-idv-funnel</code></td><td class='ok'>sim</td></tr></table>
+<table><tr><th>Contêiner</th><th>Imagem</th><th>Pasta do compose</th><th>No backup?</th></tr><tr><td><code>agente-de-saude-api-1</code></td><td><code>agente-de-saude-api</code></td><td><code>/home/joao-server/agente-de-saude/infra</code></td><td class='ok'>sim</td></tr><tr><td><code>agente-de-saude-backup-1</code></td><td><code>agente-de-saude-backup</code></td><td><code>/home/joao-server/agente-de-saude/infra</code></td><td class='ok'>sim</td></tr><tr><td><code>agente-de-saude-caddy-1</code></td><td><code>caddy:2-alpine</code></td><td><code>/home/joao-server/agente-de-saude/infra</code></td><td class='ok'>sim</td></tr><tr><td><code>agente-de-saude-db-1</code></td><td><code>postgres:17-alpine</code></td><td><code>/home/joao-server/agente-de-saude/infra</code></td><td class='ok'>sim</td></tr><tr><td><code>flaresolverr</code></td><td><code>ghcr.io/flaresolverr/flaresolverr:latest</code></td><td><code>/home/joao-server/lettarrboxd</code></td><td class='ok'>sim</td></tr><tr><td><code>homer</code></td><td><code>b4bz/homer:latest</code></td><td><code>/home/joao-server/homer</code></td><td class='ok'>sim</td></tr><tr><td><code>lettarrboxd</code></td><td><code>lettarrboxd-fork:latest</code></td><td><code>/home/joao-server/lettarrboxd</code></td><td class='ok'>sim</td></tr><tr><td><code>rag-idv-funnel</code></td><td><code>tailscale/tailscale:v1.102.5</code></td><td><code>/home/joao-server/rag-idv-funnel</code></td><td class='ok'>sim</td></tr></table>
 <p>Para cada um com "sim": <code>cd &lt;pasta&gt; &amp;&amp; docker compose up -d</code>.</p>
 
 <h2>4. As RAGs (MCPs dos cursos)</h2>
@@ -106,7 +106,7 @@ systemctl --user enable --now carteira-google.timer rag-cin-mcp.service rag-ia-a
 <li>Áudio e vídeo das RAGs, e o ambiente Python (recriável).</li>
 <li>O banco do Jellyfin (<code>/var/lib/jellyfin</code>: usuários e histórico). Refaça as bibliotecas apontando para <code>/mnt/midia/filmes</code>, <code>series</code>, <code>musicas</code>.</li>
 <li>A partição cifrada de 372 GB do HD externo.</li>
-<li>compose do contêiner <code>flaresolverr</code> (<code>/home/joao-server/lettarrboxd</code>)</li><li>compose do contêiner <code>lettarrboxd</code> (<code>/home/joao-server/lettarrboxd</code>)</li>
+
 </ul>
 <p>O <b>agente-de-saúde</b> tem backup próprio: banco no GitHub (03:00) e artefatos no B2 (03:30). O código está em
 <code>github.com/joaosgotti/agente-de-saude</code>.</p>
