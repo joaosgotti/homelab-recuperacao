@@ -29,8 +29,8 @@ li{margin:3px 0} ol>li{margin:8px 0}
 Esta página é gerada pelo próprio servidor todo dia e publicada aqui: <a href="https://joaosgotti.github.io/homelab-recuperacao/">https://joaosgotti.github.io/homelab-recuperacao/</a></p>
 
 <div class="status">
-<b>Página atualizada em:</b> 30/10/2026 06:33<br>
-<b>Último backup offsite confirmado:</b> 30/10/2026 05:04
+<b>Página atualizada em:</b> 31/10/2026 06:32<br>
+<b>Último backup offsite confirmado:</b> 31/10/2026 05:01
 </div>
 <div class="status alerta">Se a data de atualização acima tem <b>mais de 2 dias</b>, o servidor parou de funcionar
 ou perdeu a internet. Nesse caso tudo que está aqui ainda vale: é a foto do último dia em que ele estava vivo.</div>
@@ -79,7 +79,7 @@ caminho e ligue de novo. As units do systemd estão em <code>/restaurado/etc/sys
 <h3>Serviços nativos</h3>
 <ul><li>Pi-hole: <code>curl -sSL https://install.pi-hole.net | bash</code>, depois copie <code>/etc/pihole</code> restaurado</li><li>Jellyfin: repositório apt oficial (<code>/etc/apt/sources.list.d/jellyfin.list</code> está no backup), <code>apt install jellyfin</code></li><li>Radarr: binário em <code>/opt/Radarr</code> (baixe de radarr.video), dados em <code>/var/lib/radarr</code></li><li>Sonarr: binário em <code>/opt/Sonarr</code> (sonarr.tv), dados em <code>/var/lib/sonarr</code></li><li>Prowlarr: binário em <code>/opt/Prowlarr</code> (prowlarr.com), dados em <code>/var/lib/prowlarr</code></li><li>Bazarr: <code>git clone</code> em <code>/opt/bazarr</code> + venv; dados em <code>/opt/bazarr/data</code></li><li>Transmission: <code>apt install transmission-daemon</code>; config em <code>/etc/transmission-daemon</code></li><li>Uptime Kuma: <code>git clone</code> em <code>/opt/uptime-kuma</code> + <code>npm run setup</code>; dados em <code>/opt/uptime-kuma/data</code></li><li>Tailscale: repositório apt oficial, <code>tailscale up</code> com a sua conta</li><li>Concierge: código e venv em <code>/opt/concierge</code> (no backup; recrie o venv)</li><li>Ollama: <code>curl -fsSL https://ollama.com/install.sh | sh</code>; modelos se baixam de novo</li><li>Docker: <code>apt install docker.io docker-compose-v2</code></li><li>Samba: <code>apt install samba</code>; config em <code>/etc/samba</code></li></ul>
 <h3>Outras units ligadas no servidor (scripts do homelab)</h3>
-<ul><li><code>backup-offsite.timer</code></li><li><code>checagens-homelab.service</code></li><li><code>pagina-recuperacao.timer</code></li><li><code>pendencias-homelab.timer</code></li><li><code>registro-rede.service</code></li><li><code>relatorio-manha.timer</code></li><li><code>saude-lembrete-jan2027.timer</code></li><li><code>saude-limpeza-pos-v3.timer</code></li><li><code>syncthing-resume.service</code></li><li><code>watchdog-rede.timer</code></li></ul>
+<ul><li><code>backup-offsite.timer</code></li><li><code>checagens-homelab.service</code></li><li><code>pagina-recuperacao.timer</code></li><li><code>pendencias-homelab.timer</code></li><li><code>registro-rede.service</code></li><li><code>relatorio-manha.timer</code></li><li><code>saude-lembrete-jan2027.timer</code></li><li><code>syncthing-resume.service</code></li><li><code>watchdog-rede.timer</code></li></ul>
 <p class="mut">Crontab do root (espelho das 04:00): <code>/restaurado/var/spool/cron/crontabs/root</code>.</p>
 
 <h3>Contêineres Docker</h3>
